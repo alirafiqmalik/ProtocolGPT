@@ -1,4 +1,3 @@
 # ProtocolGPT
-Inferring State Machine from the Protocol Implementation via Large Language Model
+Unleashing the Power of LLM to Infer State Machine from the Protocol Implementation
 
-We will release the source code of ProtocolGPT and experimental data soon.
