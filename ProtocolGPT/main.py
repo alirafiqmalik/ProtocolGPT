@@ -4,7 +4,7 @@ import fire
 import time
 import logging
 
-from config import CONFIGURE_STEPS, save_config, get_config, config_path, remove_api_key, remove_model_type, remove_model_name_local, remove_model_name_openai
+from config import CONFIGURE_STEPS, save_config, get_config, config_path, remove_api_key, remove_model_type, remove_model_name_openai
 from consts import DEFAULT_CONFIG
 from llm import factory_llm, load_local_files
 from utils import get_repo
