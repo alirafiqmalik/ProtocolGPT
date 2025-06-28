@@ -7,7 +7,7 @@ import openai
 import questionary
 import yaml
 
-from consts import MODEL_TYPES, OPENAI_API_KEY, OPENROUTER_API_BASE # Import OPENROUTER_API_BASE
+from consts import MODEL_TYPES, OPENROUTER_API_BASE # Import OPENROUTER_API_BASE
 
 config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".config.yaml")
 
