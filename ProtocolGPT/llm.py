@@ -1,5 +1,3 @@
-# llm.py
-
 import os
 import time
 import logging
@@ -17,7 +15,7 @@ from langchain.llms import LlamaCpp
 from langchain.text_splitter import RecursiveCharacterTextSplitter, Language
 from langchain.memory import ConversationSummaryMemory
 
-from consts import MODEL_TYPES, OPENROUTER_API_BASE # Import OPENROUTER_API_BASE
+from consts import MODEL_TYPES
 from utils import load_local_files, get_local_vector_store, calculate_cost, StreamStdOut
 
 
@@ -61,7 +59,7 @@ class BaseLLM:
             chunk_overlap=int(self.config.get("chunk_overlap"))
         )
         texts = text_splitter.split_documents(docs)
-        if index == MODEL_TYPES["OPENAI"] or index == MODEL_TYPES["OPENROUTER"]: # Adjust condition
+        if index == MODEL_TYPES["OPENAI"]:
             cost = calculate_cost(docs, self.config.get("openai_model_name"))
             approve = questionary.select(
                 f"Creating a vector store will cost ~${cost:.5f}. Do you want to continue?",
@@ -176,30 +174,16 @@ class BaseLLM:
 
 class OpenAILLM(BaseLLM):
     def _create_store(self, root_dir: str) -> Optional[FAISS]:
-        # Conditionally set openai_api_base for embeddings based on model_type
-        if self.config.get("model_type") == MODEL_TYPES["OPENROUTER"]:
-            embeddings = OpenAIEmbeddings(openai_api_key=self.config.get("api_key"), openai_api_base=OPENROUTER_API_BASE)
-        else:
-            embeddings = OpenAIEmbeddings(openai_api_key=self.config.get("api_key"))
-        return self._create_vector_store(embeddings, self.config.get("model_type"), root_dir) # Pass model_type as index
+        embeddings = OpenAIEmbeddings(openai_api_key=self.config.get("api_key"))
+        return self._create_vector_store(embeddings, MODEL_TYPES["OPENAI"], root_dir)
 
     def _create_model(self):
-        # Conditionally set openai_api_base for ChatOpenAI based on model_type
-        if self.config.get("model_type") == MODEL_TYPES["OPENROUTER"]:
-            return ChatOpenAI(model_name=self.config.get("openai_model_name"),
-                            openai_api_key=self.config.get("api_key"),
-                            openai_api_base=OPENROUTER_API_BASE, # Set OpenRouter API base
-                            streaming=True,
-                            max_tokens=int(self.config.get("max_tokens")),
-                            callback_manager=CallbackManager([StreamStdOut()]),
-                            temperature=float(self.config.get("temperature")))
-        else:
-            return ChatOpenAI(model_name=self.config.get("openai_model_name"),
-                            openai_api_key=self.config.get("api_key"),
-                            streaming=True,
-                            max_tokens=int(self.config.get("max_tokens")),
-                            callback_manager=CallbackManager([StreamStdOut()]),
-                            temperature=float(self.config.get("temperature")))
+        return ChatOpenAI(model_name=self.config.get("openai_model_name"),
+                          openai_api_key=self.config.get("api_key"),
+                          streaming=True,
+                          max_tokens=int(self.config.get("max_tokens")),
+                          callback_manager=CallbackManager([StreamStdOut()]),
+                          temperature=float(self.config.get("temperature")))
 
 
 def factory_llm(root_dir, config):

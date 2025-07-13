@@ -1,5 +1,3 @@
-# chatIKE.py
-
 import os
 import platform
 
@@ -15,7 +13,6 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter, Language
 from langchain.chains import ConversationalRetrievalChain
 from langchain.document_loaders import TextLoader, DirectoryLoader, GutenbergLoader
 from llm import load_local_files
-from consts import OPENROUTER_API_BASE # Import OPENROUTER_API_BASE
 
 query_list = {
     "IKE_States" : "As a IKE protocol specialist, your task is to extract IKE protocol states and how many IKE protocol states in these code snippets of IKE implementation?  Represent them with json.",
@@ -26,15 +23,11 @@ model_list = {
     "gpt-3.5-turbo" : "gpt-3.5-turbo",
     "gpt-3.5-turbo-16k" : "gpt-3.5-turbo-16k",
     "gpt-4" : "gpt-4",
-    "gpt-4-1106-preview" : "gpt-4-1106-preview", # Added from original file
 }
 
 def chatGPT():
-    # Set the API base for openai library
-    openai.api_base = OPENROUTER_API_BASE 
-    
-    llm = OpenAI(openai_api_key="", openai_api_base=OPENROUTER_API_BASE) # Set API base for OpenAI LLM
-    chat_model = ChatOpenAI(model="gpt-3.5-turbo", openai_api_base=OPENROUTER_API_BASE) # Set API base for ChatOpenAI
+    llm = OpenAI(openai_api_key="")
+    chat_model = ChatOpenAI(model="gpt-3.5-turbo")
 
     # 加载文件
     codeLoader = TextLoader(file_path="/home/why/sec_sea/protocols/ike/strongswan/src/libcharon/encoding/message.c")
@@ -58,6 +51,9 @@ def chatGPT():
     #     ))
 
 
+
+
+
 def chatIKE():
     persist_dir = "/home/why/sec_sea/llm/IPsecGpt/remeo"
     loader = TextLoader(file_path="/home/why/sec_sea/protocols/ike/strongswan/src/libcharon/sa/ike_sa.c")
@@ -77,13 +73,12 @@ def chatIKE():
         chunk_overlap=100)
     code_doc = cppSpliter.split_documents(code_data)
 
-    # Set API base for OpenAIEmbeddings
-    embeddings = OpenAIEmbeddings(openai_api_base=OPENROUTER_API_BASE) 
+    embeddings = OpenAIEmbeddings()
     vectordb = Chroma.from_documents(code_doc, embeddings, persist_directory=persist_dir)
     vectordb.persist()
 
     code_qa = ConversationalRetrievalChain.from_llm(
-        llm=ChatOpenAI(temperature=0, model_name=model_list["gpt-3.5-turbo-16k"], openai_api_key="", openai_api_base=OPENROUTER_API_BASE), # Set OpenRouter API base
+        llm=ChatOpenAI(temperature=0, model_name=model_list["gpt-3.5-turbo-16k"], openai_api_key=""), 
         retriever=vectordb.as_retriever(),
         return_source_documents=True,
         
@@ -116,3 +111,5 @@ if __name__=="__main__":
     # chatIKE()
     # chatGPT()
     test()
+
+    

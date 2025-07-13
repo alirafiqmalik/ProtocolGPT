@@ -1,13 +1,11 @@
-# consts.py
-
 import os
 from pathlib import Path
 
 from langchain.document_loaders import CSVLoader, UnstructuredWordDocumentLoader, UnstructuredEPubLoader, PDFMinerLoader, UnstructuredMarkdownLoader, TextLoader
 
 # api key of hhh
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "****")
-OPENROUTER_API_BASE = "https://openrouter.ai/api/v1" # Add this line
+# OPENAI_API_KEY = ""
+OPENAI_API_KEY = "****"
 EXCLUDE_DIRS = ['__pycache__', '.venv', '.git', '.idea', 'venv', 'env', 'node_modules', 'dist', 'build', '.vscode',
                 '.github', '.gitlab']
 ALLOW_FILES = ['.txt', '.js', '.mjs', '.ts', '.tsx', '.css', '.scss', '.less', '.html', '.htm', '.json', '.py',
@@ -17,7 +15,6 @@ EXCLUDE_FILES = ['requirements.txt', 'package.json', 'package-lock.json', 'yarn.
 MODEL_TYPES = {
     "OPENAI": "openai",
     "LOCAL": "local",
-    "OPENROUTER": "openrouter", # Add this line
 }
 DEFAULT_MODEL_DIRECTORY = os.path.join(str(Path.home()), ".cache", "gpt4all").replace("\\", "\\\\")
 
